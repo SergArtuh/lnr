@@ -86,8 +86,6 @@ namespace lnr {
 
 		T length() const;
 
-		Vector cross(const Vector& r) const;
-
 		void normalize();
 
 		size_t size() const { return S; }
@@ -161,15 +159,21 @@ namespace lnr {
 		return sqrt(DotProduct<S>::result(m_data, m_data));
 	}
 
-	template<class T, size_t S>
-	inline Vector<T, S> Vector<T, S>::cross(const Vector& r) const {
-		//TODO: implement
-		return Vector();
-	}
 
 	template<class T, size_t S>
 	inline void Vector<T, S>::normalize() {
 		Normalize<S>::result(m_data, length());
+	}
+
+
+	template<class T>
+	inline Vector<T, 3> cross(const Vector<T, 3> & v, const Vector<T, 3> & w) {
+		return Vector<T, 3>({
+			v[1] * w[2] - v[2] * w[1],
+			v[2] * w[0] - v[0] * w[2],
+			v[0] * w[1] - v[1] * w[0]
+			});
+		
 	}
 
 
