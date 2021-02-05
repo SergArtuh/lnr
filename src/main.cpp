@@ -1,11 +1,22 @@
 #include "Vector.h"
 
+#include "MemoryPool.h"
 
 void main() {
-	float data[4] = { 1,2,3,4 };
-	lnr::Vec4f vec4(nullptr);
 
-	vec4.SetDataPtr(data);
-	data[0] = 5;
 
+	lnr::MemoryPool<sizeof(float) * 4> memPool;
+
+	std::vector<float*> datas;
+
+	for (int i = 0; i < 500; ++i) {
+		float* data = reinterpret_cast<float*>(memPool.Alocate());
+		data[0] = i + 0;
+		data[1] = i + 1;
+		data[2] = i + 2;
+		data[3] = i + 3;
+		datas.push_back(data);
+	}
+	
+	EXIT_SUCCESS;
 }
