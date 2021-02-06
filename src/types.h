@@ -13,6 +13,12 @@ using CI32 = const int32_t;
 using UI32 = uint32_t;
 using CUI32 = const uint32_t;
 
+using I16 = int16_t;
+using CI16 = const int16_t;
+using UI16 = uint16_t;
+using CUI16 = const uint16_t;
+
+
 using Size = uint64_t;
 using CSize = const uint64_t;
 
