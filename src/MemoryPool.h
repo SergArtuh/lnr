@@ -6,7 +6,7 @@
 
 namespace lnr {
 
-	template<Size chunkSize>
+	template<Size chunkSize, Size pagesN = 100>
 	class MemoryPool final {
 
 		struct Chunk {
@@ -19,11 +19,12 @@ namespace lnr {
 
 			static const Size PAGE_SIZE = 0x1000;
 			static const Size CHUNK_STRUCT_SIZE = sizeof(Chunk);
-			constexpr static const Size CHUNKS_PER_BLOCK = (PAGE_SIZE) / (chunkSize + CHUNK_STRUCT_SIZE);
+			constexpr static const Size BLOCK_SIZE = PAGE_SIZE * pagesN;
+			constexpr static const Size CHUNKS_PER_BLOCK = (BLOCK_SIZE) / (chunkSize + CHUNK_STRUCT_SIZE);
 
 		public:
 			ChunkBlock() {
-				Byte * alocatedData = reinterpret_cast<Byte*>(malloc(PAGE_SIZE));
+				Byte * alocatedData = reinterpret_cast<Byte*>(malloc(BLOCK_SIZE));
 
 				if (!alocatedData) {
 					throw std::exception("Unable to allocate memory for Chunk block");
@@ -46,6 +47,13 @@ namespace lnr {
 					m_chunks[i].Data = currentData;
 					currentData += chunkSize;
 				}
+			}
+
+			ChunkBlock(ChunkBlock && r) : m_freeChunks(r.m_freeChunks), m_data(r.m_data), m_chunks(r.m_chunks), m_nextFreeChunk(r.m_nextFreeChunk) {
+				r.m_freeChunks = 0;
+				r.m_data = nullptr;
+				r.m_chunks = nullptr;
+				r.m_nextFreeChunk = nullptr;
 			}
 
 			void Release() {
@@ -117,8 +125,11 @@ namespace lnr {
 			}
 
 			ChunkBlock newChunk;
-			m_blocks.push_back(newChunk);
-			return newChunk.AllocateChunk();
+			Data data = newChunk.AllocateChunk();
+
+			m_blocks.push_back(std::move(newChunk));
+
+			return data;
 		}
 
 		void Dellocate(Data data) {
