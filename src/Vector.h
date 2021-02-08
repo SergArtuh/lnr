@@ -6,9 +6,6 @@
 
 namespace lnr {
 
-	
-
-
 	template<class T, Size S>
 	class Vector final
 		 {
@@ -103,6 +100,18 @@ namespace lnr {
 		pT m_data = nullptr;
 	};
 
+	using Vec4f = Vector<float, 4>;
+	using Vec3f = Vector<float, 3>;
+	using Vec2f = Vector<float, 2>;
+	using Vec1f = Vector<float, 1>;
+
+	using Vec4i = Vector<int, 4>;
+	using Vec3i = Vector<int, 3>;
+	using Vec2i = Vector<int, 2>;
+	using Vec1i = Vector<int, 1>;
+
+
+
 	template<class T, size_t S>
 	MemoryPool<Vector<T, S>::SIZE_IN_BYTES, Vector<T, S>::DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT>
 		Vector<T, S>::s_allocator = MemoryPool<Vector<T, S>::SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT>();
@@ -189,15 +198,7 @@ namespace lnr {
 	}
 
 
-	using Vec4f = Vector<float, 4>;
-	using Vec3f = Vector<float, 3>;
-	using Vec2f = Vector<float, 2>;
-	using Vec1f = Vector<float, 1>;
 
-	using Vec4i = Vector<int, 4>;
-	using Vec3i = Vector<int, 3>;
-	using Vec2i = Vector<int, 2>;
-	using Vec1i = Vector<int, 1>;
 
 
 	namespace {
