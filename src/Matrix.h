@@ -1,4 +1,8 @@
 #pragma once
+#include <array>
+
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "types.h"
 #include "Vector.h"
@@ -10,10 +14,8 @@ namespace lnr {
 	public:
 		using CT = const T;
 		using pT = T*;
-		using pT = T*;
 		using Vec = Vector<T, M>;
 		using pVec = Vec*;
-		using pMat = pVec*;
 		using InitArray = std::array<T, M * N>;
 	private:
 		constexpr static Size SIZE_IN_BYTES = sizeof(T) * M * N;
@@ -23,43 +25,28 @@ namespace lnr {
 
 		Matrix();
 
+		Matrix(nullptr_t);
+
 		Matrix(pT ptr);
 
 		~Matrix();
 
 		Vec& operator[](Size n) {
-			return m_vectors[n];
+			return const_cast<Vec & >(const_cast<const Matrix *>(this)->operator[](n));
+			
 		}
 
 		const Vec& operator[](Size n) const {
-			return m_vectors[n];
+			Vec vec(nullptr);
+			vec.SetDataPtr(m_data + M * n);
+			return vec;
 		}
+
+		void SetVectorPtr(pT);
 
 	private:
 
-		template<int VN>
-		void DefaultInit(pVec src) {
-			pVec v = new (src) Vec();
-			DefaultInit<VN - 1>(++src);
-		}
-
-		template<>
-		void DefaultInit<1>(pVec src) {
-			pVec v = new (src) Vec();
-		}
-
-		template<int VN>
-		void CopyFromSrcInit(pVec src, pT destData) {
-			pVec v = new (src) Vec(destData);
-			CopyFromSrc<VN - 1>(++src, destData + M);
-		}
-
-		template<>
-		void CopyFromSrcInit<1>(pVec src, pT destData) {
-			pVec v = new (src) Vec(destData);
-		}
-
-		pVec m_vectors = nullptr;
+		pT m_data = nullptr;
 
 	};
 
@@ -80,19 +67,25 @@ namespace lnr {
 
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix() : m_vectors{ reinterpret_cast<pVec>(s_allocator.Allocate()) } {
-		DefaultInit<N>(m_vectors);
+	inline Matrix<T, M, N>::Matrix() : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {}
+
+	template<class T, size_t M, size_t N>
+	inline Matrix<T, M, N>::Matrix(pT ptr) : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {
+		memcpy(m_data, ptr, SIZE_IN_BYTES);
 	}
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix(pT ptr) : m_vectors{ reinterpret_cast<pVec>(s_allocator.Allocate()) } {
-		CopyFromSrcInit<N>(m_vectors, ptr);
-	}
+	inline Matrix<T, M, N>::Matrix(nullptr_t) : m_data{ nullptr } {}
 
 	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::~Matrix() {
-		if (m_vectors) {
-			s_allocator.Dellocate(m_vectors);
+		if (m_data) {
+			s_allocator.Dellocate(m_data);
 		}
+	}
+
+	template<class T, size_t M, size_t N>
+	inline void Matrix<T, M, N>::SetVectorPtr(pT vec) {
+		m_data = vec;
 	}
 }
