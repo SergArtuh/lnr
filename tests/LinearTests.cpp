@@ -2,6 +2,7 @@
 #include "catch_amalgamated.hpp"
 
 #include "../src/Vector.h"
+#include "../src/Matrix.h"
 
 
 TEST_CASE( "Vector initialization", "[Vectors]" ) {
@@ -131,5 +132,80 @@ TEST_CASE("Vector normalize", "[Vectors]") {
 	vn1.normalize();
 	for (int i = 0; i < vn0.size(); ++i) {
 		REQUIRE(vn0[i] == vn1[i]);
+	}
+}
+
+
+TEST_CASE("Matrix initialization", "[Matrix]") {
+	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
+	float testData1[] = { 5.f, 6.f, 7.f, 8.f };
+
+	float testDataCheck0[] = { 1.f, 2.f, 3.f, 4.f };
+
+	constexpr Size N = 2;
+
+	lnr::Mat2f m0;
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			m0[i][j] = testData0[i * N + j];
+		}
+	}
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m0[i][j] == testData0[i * N + j]);
+		}
+	}
+
+
+
+	lnr::Mat2f m1 = { 1.f, 2.f, 3.f, 4.f };
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m1[i][j] == testData0[i * N + j]);
+		}
+	}
+
+
+
+	lnr::Mat2f m2 = m1;
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m2[i][j] == testData0[i * N + j]);
+		}
+	}
+
+	lnr::Mat2f m3 = [&m2]() {
+		lnr::Mat2f mt = m2;
+		return mt;
+	}();
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m2[i][j] == testData0[i * N + j]);
+		}
+	}
+
+
+	lnr::Mat2f m4(nullptr); 
+	m4.SetDataPtr(testData0);
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m4[i][j] == testDataCheck0[i * N + j]);
+		}
+	}
+
+	for (int i = 0; i < N * N; ++i) {
+		testData0[i]++;
+	}
+
+
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			REQUIRE(m4[i][j] != testDataCheck0[i * N + j]);
+		}
 	}
 }

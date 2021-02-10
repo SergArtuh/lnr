@@ -16,7 +16,7 @@ namespace lnr {
 		using pT = T*;
 		using Vec = Vector<T, M>;
 		using pVec = Vec*;
-		using InitArray = std::array<T, M * N>;
+		using InitList= std::initializer_list<T>;
 	private:
 		constexpr static Size SIZE_IN_BYTES = sizeof(T) * M * N;
 		static const Size DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT = 0x100;
@@ -31,7 +31,9 @@ namespace lnr {
 
 		Matrix(Matrix &&);
 
-		Matrix(pT ptr);
+		Matrix(pT);
+
+		Matrix(InitList);
 
 		~Matrix();
 
@@ -54,7 +56,7 @@ namespace lnr {
 			return vec;
 		}
 
-		void SetVectorPtr(pT);
+		void SetDataPtr(pT);
 
 	private:
 
@@ -87,6 +89,14 @@ namespace lnr {
 	}
 
 	template<class T, size_t M, size_t N>
+	inline Matrix<T, M, N>::Matrix(InitList initlist) : Matrix() {
+		Size counet = 0;
+		for (auto it : initlist) {
+			m_data[counet++] = it;
+		}
+	}
+
+	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::Matrix(nullptr_t) : m_data{ nullptr } {}
 
 	template<class T, size_t M, size_t N>
@@ -105,7 +115,7 @@ namespace lnr {
 	}
 
 	template<class T, size_t M, size_t N>
-	inline void Matrix<T, M, N>::SetVectorPtr(pT vec) {
+	inline void Matrix<T, M, N>::SetDataPtr(pT vec) {
 		m_data = vec;
 	}
 }
