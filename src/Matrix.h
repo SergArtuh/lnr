@@ -27,9 +27,21 @@ namespace lnr {
 
 		Matrix(nullptr_t);
 
+		Matrix(const Matrix&);
+
+		Matrix(Matrix &&);
+
 		Matrix(pT ptr);
 
 		~Matrix();
+
+
+		Matrix & operator=(const Matrix & r) {
+			if (!m_data) {
+				m_data = s_allocator.Allocate();
+			}
+			memcpy(m_data, r.m_data, SIZE_IN_BYTES);
+		}
 
 		Vec& operator[](Size n) {
 			return const_cast<Vec & >(const_cast<const Matrix *>(this)->operator[](n));
@@ -76,6 +88,14 @@ namespace lnr {
 
 	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::Matrix(nullptr_t) : m_data{ nullptr } {}
+
+	template<class T, size_t M, size_t N>
+	inline Matrix<T, M, N>::Matrix(const Matrix& r) : Matrix(reinterpret_cast<pT>( r.m_data)) {}
+
+	template<class T, size_t M, size_t N>
+	inline Matrix<T, M, N>::Matrix(Matrix&& r) : m_data(r.m_data) {
+		r.m_data = nullptr;
+	}
 
 	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::~Matrix() {

@@ -10,13 +10,11 @@ void main() {
 
 
 	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
-	lnr::Mat2f m(nullptr);
-	m.SetVectorPtr(testData0);
-
-	testData0[3] = 0;
+	lnr::Mat2f m(testData0);
+	lnr::Mat2f m1 = m;
 
 	m[1][1] = 5;
-	float a = m[1][1];
+	float a = m1[1][1];
 
 	EXIT_SUCCESS;
 }
