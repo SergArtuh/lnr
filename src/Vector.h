@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <array>
 
+#include <type_traits>
+
 #include "MemoryPool.h"
 
 namespace lnr {
@@ -11,11 +13,15 @@ namespace lnr {
 		 {
 
 	public:
+		using type = T;
 		using pT = T*;
 		using InitArray = std::array<T, S>;
 
-	private:
+
+	public:
 		constexpr static Size SIZE_IN_BYTES = sizeof(T) * S;
+
+	private:
 		static const Size DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT = 0x100;
 		static MemoryPool<SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT> s_allocator;
 	public:

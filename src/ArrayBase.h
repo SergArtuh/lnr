@@ -12,19 +12,15 @@ namespace lnr {
 	template<class T, size_t M, size_t N>
 	class Matrix final {
 	public:
-		using type = T;
+		using CT = const T;
 		using pT = T*;
 		using Vec = Vector<T, M>;
 		using pVec = Vec*;
 		using InitList= std::initializer_list<T>;
-
-	public:
-		constexpr static Size SIZE_IN_BYTES = sizeof(T) * M * N;
-
 	private:
+		constexpr static Size SIZE_IN_BYTES = sizeof(T) * M * N;
 		static const Size DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT = 0x100;
 		static MemoryPool<SIZE_IN_BYTES, DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT> s_allocator;
-
 	public:
 
 		Matrix();

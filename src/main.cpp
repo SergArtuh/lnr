@@ -1,20 +1,26 @@
 #include "Vector.h"
 #include "Matrix.h"
 
+#include "Array.h"
+
 #include "MemoryPool.h"
 
 #include <ctime>
 #include <iostream>
 
+#include <type_traits>
+
+
+enum class Test : int {INVALID = 0};
+
 void main() {
 
 
-	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
-	lnr::Mat2f m(testData0);
-	lnr::Mat2f m1 = m;
+	lnr::Mat2fArray arr(10);
+	lnr::Mat2f mat = arr[0];
+	mat[0][0] = 5;
 
-	m[1][1] = 5;
-	float a = m1[1][1];
+	float a = arr[0][0][0];
 
 	EXIT_SUCCESS;
 }
