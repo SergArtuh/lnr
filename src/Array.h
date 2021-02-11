@@ -12,8 +12,42 @@ namespace lnr {
 	class Array final {
 		using pMemRes = std::pmr::memory_resource *;
 	public:
+
+		Array() : m_data{ nullptr }, m_size{0}, m_memRes{ std::pmr::null_memory_resource() } {
+		}
+
 		Array(Size count, pMemRes memRess = std::pmr::new_delete_resource()) :
-			m_memRes(memRess), m_data(reinterpret_cast<Byte *>(m_memRes->allocate(count* T::SIZE_IN_BYTES))) {}
+			m_memRes{ memRess }, m_size{ count }, m_data{ reinterpret_cast<Byte*>(m_memRes->allocate(m_size* T::SIZE_IN_BYTES)) } {}
+
+
+		Array(Data dataPtr, Size count, pMemRes memRess = std::pmr::new_delete_resource()) :
+			m_memRes{ memRess }, m_size{ count }, m_data{ reinterpret_cast<Byte*>(m_memRes->allocate(m_size* T::SIZE_IN_BYTES)) } {
+			memcpy(m_data, dataPtr, m_size * T::SIZE_IN_BYTES);
+		}
+
+		Array(Array& r) : m_memRes{ r.m_memRes }, m_size{ r.m_size }, m_data{ reinterpret_cast<Byte*>(m_memRes->allocate(m_size* T::SIZE_IN_BYTES)) } {
+			memcpy(m_data, r.m_data, m_size * T::SIZE_IN_BYTES);
+		}
+
+		Array(Array && r) : m_memRes{ r.m_memRes }, m_size(r.m_size), m_data{r.m_data } {
+			r.m_memRes = std::pmr::null_memory_resource();
+			r.m_size = 0;
+			r.m_data = nullptr;
+		}
+
+		~Array() {
+			if (m_data) {
+				m_memRes->deallocate(m_data, m_size * T::SIZE_IN_BYTES);
+			}
+		}
+
+		Array & operator=(Array& r) {
+			m_memRes = r.m_memRes;
+			m_size = r.m_size;
+			m_data = reinterpret_cast<Byte*>(m_memRes->allocate(m_size * T::SIZE_IN_BYTES));
+			memcpy(m_data, r.m_data, m_size * T::SIZE_IN_BYTES);
+			return *this;
+		}
 
 
 		const T & operator[](Size n) const {
@@ -25,10 +59,21 @@ namespace lnr {
 			return const_cast<T&>(const_cast<const Array*>(this)->operator[](n));
 		}
 
+		Size GetSize() const {
+			return m_size;
+		}
+
+		bool IsValide() const{
+			return m_data && m_size;
+		}
+
 	private:
-		mutable T m_accessor = nullptr;
+		Size m_size = 0;
 		pMemRes m_memRes = nullptr;
 		Byte * m_data = nullptr;
+
+		mutable T m_accessor = nullptr;
+		
 	};
 
 

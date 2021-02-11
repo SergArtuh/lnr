@@ -3,6 +3,7 @@
 
 #include "../src/Vector.h"
 #include "../src/Matrix.h"
+#include "../src/Array.h"
 
 
 TEST_CASE( "Vector initialization", "[Vectors]" ) {
@@ -208,4 +209,117 @@ TEST_CASE("Matrix initialization", "[Matrix]") {
 			REQUIRE(m4[i][j] != testDataCheck0[i * N + j]);
 		}
 	}
+}
+
+
+TEST_CASE("Array initialization", "[Array]") {
+	float data0[] = { 1.f ,2.f ,3.f ,4.f ,5.f ,6.f ,7.f ,8.f };
+	
+	const Size vecLen = 2;
+	const Size arrLen = sizeof(data0) / (sizeof(data0[0]) * vecLen);
+
+	{
+		lnr::Vec2fArray arr0(arrLen);
+		//lnr::Vec2fArray arr1(arrLen);
+
+		REQUIRE(arr0.IsValide());
+
+		for (int i = 0; i < arrLen; ++i) {
+			arr0[i][0] = data0[i * vecLen + 0];
+			arr0[i][1] = data0[i * vecLen + 1];
+
+			//lnr::Vec2f & v = arr1[i];
+			//v[0] = static_cast<float>(i * arrLen + 0);
+			//v[1] = static_cast<float>(i * arrLen + 1);
+		}
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr0[i][0] == data0[i * vecLen + 0]);
+			REQUIRE(arr0[i][1] == data0[i * vecLen + 1]);
+
+			//lnr::Vec2f & v = arr1[i];
+			//REQUIRE(v[0] == data0[i * vecLen + 0]);
+			//REQUIRE(v[1] == data0[i * vecLen + 1]);
+		}
+	}
+
+
+	{
+		lnr::Vec2fArray arr0(data0, arrLen);
+		lnr::Vec2fArray arr1(data0, arrLen);
+
+		REQUIRE(arr0.IsValide());
+		REQUIRE(arr1.IsValide());
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr0[i][0] == data0[i * vecLen + 0]);
+			REQUIRE(arr0[i][1] == data0[i * vecLen + 1]);
+
+			lnr::Vec2f& v = arr1[i];
+			REQUIRE(v[0] == data0[i * vecLen + 0]);
+			REQUIRE(v[1] == data0[i * vecLen + 1]);
+		}
+	}
+
+	{
+		lnr::Vec2fArray arr0(data0, arrLen);
+		lnr::Vec2fArray arr1(arr0);
+		lnr::Vec2fArray arr2;
+		arr2 = arr0;
+
+		REQUIRE(arr0.IsValide());
+		REQUIRE(arr1.IsValide());
+		REQUIRE(arr2.IsValide());
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr0[i][0] == arr1[i][0]);
+			REQUIRE(arr0[i][1] == arr1[i][1]);
+
+			REQUIRE(arr0[i][0] == arr2[i][0]);
+			REQUIRE(arr0[i][1] == arr2[i][1]);
+		}
+
+		for (int i = 0; i < arrLen; ++i) {
+			arr0[i][0] += 1.f;
+			arr0[i][1] += 1.f;
+		}
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr0[i][0] != arr1[i][0]);
+			REQUIRE(arr0[i][1] != arr1[i][1]);
+
+			REQUIRE(arr0[i][0] != arr2[i][0]);
+			REQUIRE(arr0[i][1] != arr2[i][1]);
+		}
+	}
+
+	{
+		lnr::Vec2fArray arr0(data0, arrLen);
+		lnr::Vec2fArray arr1(std::move(arr0));
+
+		REQUIRE(!arr0.IsValide());
+		REQUIRE(arr1.IsValide());
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr1[i][0] == data0[i * vecLen + 0]);
+			REQUIRE(arr1[i][1] == data0[i * vecLen + 1]);
+		}
+	}
+
+
+	{
+		lnr::Vec2fArray arr0 = [&data0, arrLen]() -> lnr::Vec2fArray {
+			lnr::Vec2fArray arr(data0, arrLen);
+			REQUIRE(arr.IsValide());
+			return arr;
+		}();
+		
+		REQUIRE(arr0.IsValide());
+
+		for (int i = 0; i < arrLen; ++i) {
+			REQUIRE(arr0[i][0] == data0[i * vecLen + 0]);
+			REQUIRE(arr0[i][1] == data0[i * vecLen + 1]);
+		}
+	}
+
 }
