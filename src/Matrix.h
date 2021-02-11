@@ -47,23 +47,22 @@ namespace lnr {
 				m_data = s_allocator.Allocate();
 			}
 			memcpy(m_data, r.m_data, SIZE_IN_BYTES);
+			return *this;
 		}
 
-		Vec& operator[](Size n) {
+		Vec & operator[](Size n) {
 			return const_cast<Vec & >(const_cast<const Matrix *>(this)->operator[](n));
-			
 		}
 
-		const Vec& operator[](Size n) const {
-			Vec vec(nullptr);
-			vec.SetDataPtr(m_data + M * n);
-			return vec;
+		const Vec & operator[](Size n) const {
+			m_accessor.SetDataPtr(m_data + M * n);
+			return m_accessor;
 		}
 
 		void SetDataPtr(pT);
 
 	private:
-
+		mutable Vec m_accessor = nullptr;
 		pT m_data = nullptr;
 
 	};

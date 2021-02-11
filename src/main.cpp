@@ -13,6 +13,14 @@
 
 enum class Test : int {INVALID = 0};
 
+
+class Foo {
+public:
+	Foo() : a{ 1 } {
+	}
+	int a = -1;
+};
+
 void main() {
 
 
@@ -20,7 +28,10 @@ void main() {
 	lnr::Mat2f mat = arr[0];
 	mat[0][0] = 5;
 
-	float a = arr[0][0][0];
+	float a = mat[0][0];
+	float b = arr[0][0][0];
 
 	EXIT_SUCCESS;
 }
+
+
