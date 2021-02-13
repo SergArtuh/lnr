@@ -10,23 +10,24 @@
 
 #include <type_traits>
 
+#include <vector>
 
-enum class Test : int {INVALID = 0};
 
 
-class Foo {
-public:
-	Foo() : a{ 1 } {
-	}
-	int a = -1;
-};
 
 void main() {
-
 	float data[] = { 1.f ,2.f ,3.f ,4.f ,5.f ,6.f ,7.f ,8.f };
 
-
 	lnr::Mat2fArray arr1(data, 2);
+
+	for (auto & m : arr1) {
+		float a = m[0][0];
+		std::cout<<a<<std::endl;
+	}
+
+
+	//lnr::ArrayIterator<lnr::Mat2f> iter(reinterpret_cast<float *>(arr1.GetDataPtr()));
+	//lnr::Mat2f & mref = *(iter++);
 
 	lnr::Mat2fArray arr;
 	arr = arr1;

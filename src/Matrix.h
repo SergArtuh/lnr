@@ -16,10 +16,12 @@ namespace lnr {
 		using pT = T*;
 		using Vec = Vector<T, M>;
 		using pVec = Vec*;
-		using InitList= std::initializer_list<T>;
+		using InitList = std::initializer_list<T>;
 
 	public:
-		constexpr static Size SIZE_IN_BYTES = sizeof(T) * M * N;
+		constexpr static Size SIZE = M * N;
+		constexpr static Size SIZE_IN_BYTES = sizeof(T) * SIZE;
+	
 
 	private:
 		static const Size DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT = 0x100;
@@ -61,8 +63,13 @@ namespace lnr {
 
 		void SetDataPtr(pT);
 
+		pT GetDataPtr() {
+			return m_data;
+		}
+
 	private:
-		mutable Vec m_accessor = nullptr;
+		inline static Vec m_accessor = nullptr;
+
 		pT m_data = nullptr;
 
 	};

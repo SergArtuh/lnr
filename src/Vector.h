@@ -19,7 +19,9 @@ namespace lnr {
 
 
 	public:
-		constexpr static Size SIZE_IN_BYTES = sizeof(T) * S;
+		constexpr static Size SIZE = S;
+		constexpr static Size SIZE_IN_BYTES = sizeof(T) * SIZE;
+		
 
 	private:
 		static const Size DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT = 0x100;
