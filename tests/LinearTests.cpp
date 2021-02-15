@@ -43,7 +43,7 @@ TEST_CASE( "Vector initialization", "[Vectors]" ) {
 	}
 }
 
-TEST_CASE("Vector filing", "[Vectors]") {
+TEST_CASE("Vector filling", "[Vectors]") {
 	const size_t N = 4;
 	auto v0 = lnr::makeZeroVector<float, N>();
 
@@ -94,7 +94,7 @@ TEST_CASE("Vector cross product", "[Vectors]") {
 }
 
 
-TEST_CASE("Vector lengrh", "[Vectors]") {
+TEST_CASE("Vector length", "[Vectors]") {
 	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
 	float testData1[] = { 5.f, 6.f, 7.f, 8.f };
 
@@ -133,6 +133,39 @@ TEST_CASE("Vector normalize", "[Vectors]") {
 	vn1.normalize();
 	for (int i = 0; i < vn0.size(); ++i) {
 		REQUIRE(vn0[i] == vn1[i]);
+	}
+}
+
+TEST_CASE("Vector with stl", "[Vectors]") {
+
+	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
+	float testData1[] = { 5.f, 6.f, 7.f, 8.f };
+	float testData2[] = { 9.f, 10.f, 11.f, 12.f };
+
+	{
+		std::vector<lnr::Vec4f> vv0;
+
+
+		lnr::Vec4f v0(testData0);
+		lnr::Vec4f v1(testData1);
+		vv0.push_back(v0);
+		vv0.push_back(std::move(v1));
+		vv0.push_back(lnr::Vec4f(testData2));
+		
+
+		for (int i = 0; i < lnr::Vec4f::SIZE; ++i) {
+			REQUIRE(vv0[0][i] == testData0[i]);
+			REQUIRE(vv0[1][i] == testData1[i]);
+			REQUIRE(vv0[2][i] == testData2[i]);
+		}
+
+
+		std::vector<lnr::Vec4f> vv1(10, lnr::Vec4f(testData0));
+		for (auto& v : vv1) {
+			for (int k = 0; k < lnr::Vec4f::SIZE; ++k) {
+				REQUIRE(v[k] == testData0[k]);
+			}
+		}
 	}
 }
 
@@ -207,6 +240,43 @@ TEST_CASE("Matrix initialization", "[Matrix]") {
 	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < N; ++j) {
 			REQUIRE(m4[i][j] != testDataCheck0[i * N + j]);
+		}
+	}
+}
+
+TEST_CASE("Matrix with stl", "[Vectors]") {
+
+	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
+	float testData1[] = { 5.f, 6.f, 7.f, 8.f };
+	float testData2[] = { 9.f, 10.f, 11.f, 12.f };
+
+	{
+		std::vector<lnr::Mat2f> mv0;
+
+
+		lnr::Mat2f m0(testData0);
+		lnr::Mat2f m1(testData1);
+		mv0.push_back(m0);
+		mv0.push_back(std::move(m1));
+		mv0.push_back(lnr::Mat2f(testData2));
+
+
+		for (int i = 0; i < lnr::Mat2f::SIZE_N; ++i) {
+			for (int j = 0; j < lnr::Mat2f::SIZE_M; ++j) {
+				REQUIRE(mv0[0][i][j] == testData0[i * lnr::Mat2f::SIZE_M + j]);
+				REQUIRE(mv0[1][i][j] == testData1[i * lnr::Mat2f::SIZE_M + j]);
+				REQUIRE(mv0[2][i][j] == testData2[i * lnr::Mat2f::SIZE_M + j]);
+			}
+		}
+
+
+		std::vector<lnr::Mat2f> mv1(10, lnr::Mat2f(testData0));
+		for (auto& m : mv1) {
+			for (int i = 0; i < lnr::Mat2f::SIZE_N; ++i) {
+				for (int j = 0; j < lnr::Mat2f::SIZE_M; ++j) {
+					REQUIRE(m[i][j] == testData0[i * lnr::Mat2f::SIZE_M + j]);
+				}
+			}
 		}
 	}
 }

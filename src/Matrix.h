@@ -13,13 +13,15 @@ namespace lnr {
 	class Matrix final {
 	public:
 		using type = T;
-		using pT = T*;
+		using pointer_type = T*;
 		using Vec = Vector<T, M>;
 		using pVec = Vec*;
 		using InitList = std::initializer_list<T>;
 
 	public:
-		constexpr static Size SIZE = M * N;
+		constexpr static Size SIZE_M = M;
+		constexpr static Size SIZE_N = N;
+		constexpr static Size SIZE = SIZE_M * SIZE_N;
 		constexpr static Size SIZE_IN_BYTES = sizeof(T) * SIZE;
 	
 
@@ -37,7 +39,7 @@ namespace lnr {
 
 		Matrix(Matrix &&);
 
-		Matrix(pT);
+		Matrix(pointer_type);
 
 		Matrix(InitList);
 
@@ -46,7 +48,7 @@ namespace lnr {
 
 		Matrix & operator=(const Matrix & r) {
 			if (!m_data) {
-				m_data = s_allocator.Allocate();
+				m_data = reinterpret_cast<pointer_type>(s_allocator.Allocate());
 			}
 			memcpy(m_data, r.m_data, SIZE_IN_BYTES);
 			return *this;
@@ -61,16 +63,16 @@ namespace lnr {
 			return m_accessor;
 		}
 
-		void SetDataPtr(pT);
+		void SetDataPtr(pointer_type);
 
-		pT GetDataPtr() {
+		pointer_type GetDataPtr() {
 			return m_data;
 		}
 
 	private:
-		inline static Vec m_accessor = nullptr;
+		mutable Vec m_accessor = nullptr;
 
-		pT m_data = nullptr;
+		pointer_type m_data = nullptr;
 
 	};
 
@@ -91,10 +93,10 @@ namespace lnr {
 
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix() : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {}
+	inline Matrix<T, M, N>::Matrix() : m_data{ reinterpret_cast<pointer_type>(s_allocator.Allocate()) } {}
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix(pT ptr) : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {
+	inline Matrix<T, M, N>::Matrix(pointer_type ptr) : m_data{ reinterpret_cast<pointer_type>(s_allocator.Allocate()) } {
 		memcpy(m_data, ptr, SIZE_IN_BYTES);
 	}
 
@@ -110,7 +112,7 @@ namespace lnr {
 	inline Matrix<T, M, N>::Matrix(nullptr_t) : m_data{ nullptr } {}
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix(const Matrix& r) : Matrix(reinterpret_cast<pT>( r.m_data)) {}
+	inline Matrix<T, M, N>::Matrix(const Matrix& r) : Matrix(reinterpret_cast<pointer_type>( r.m_data)) {}
 
 	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::Matrix(Matrix&& r) : m_data(r.m_data) {
@@ -125,7 +127,7 @@ namespace lnr {
 	}
 
 	template<class T, size_t M, size_t N>
-	inline void Matrix<T, M, N>::SetDataPtr(pT vec) {
+	inline void Matrix<T, M, N>::SetDataPtr(pointer_type vec) {
 		m_data = vec;
 	}
 }
