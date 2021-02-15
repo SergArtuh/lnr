@@ -524,3 +524,31 @@ TEST_CASE("Array iterator", "[Array]") {
 		}
 	}
 }
+
+
+TEST_CASE("Array std fill", "[Array]") {
+	
+	{
+		lnr::Mat2fArray arr(10);
+		lnr::Mat2f m = { 1.f ,2.f ,3.f ,4.f };
+
+		std::fill(arr.begin(), arr.end(), m);
+
+		for (auto& it : arr) {
+			REQUIRE(it == m);
+		}
+	}
+
+	{
+		lnr::Vec4fArray arr =(10);
+		lnr::Vec4f v = { 1.f ,2.f ,3.f ,4.f };
+
+		std::fill(arr.begin(), arr.end(), v);
+
+		for (auto& it : arr) {
+			REQUIRE(it == v);
+		}
+	}
+
+
+}

@@ -54,6 +54,14 @@ namespace lnr {
 			return *this;
 		}
 
+		bool operator==(const Matrix& r) const {
+			return !operator!=(r);
+		}
+
+		bool operator!=(const Matrix& r) const {
+			return memcmp(m_data, r.m_data, SIZE_IN_BYTES);
+		}
+
 		Vec & operator[](Size n) {
 			return const_cast<Vec & >(const_cast<const Matrix *>(this)->operator[](n));
 		}

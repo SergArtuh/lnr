@@ -46,6 +46,16 @@ namespace lnr {
 
 		Vector& operator=(const Vector& r);
 
+
+		bool operator==(const Vector& r) const {
+			return !operator!=(r);
+		}
+
+		bool operator!=(const Vector& r) const {
+			return memcmp(m_data, r.m_data, SIZE_IN_BYTES);
+		}
+
+
 		T& operator[](size_t n) {
 			return m_data[n];
 		}

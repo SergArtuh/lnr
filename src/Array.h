@@ -16,14 +16,15 @@ namespace lnr {
 
 	public:
 		class Iterator {
+		public:
 			using iterator_category = std::forward_iterator_tag;
 			using difference_type = std::ptrdiff_t;
 			using value_type = typename T;
 			using pointer = value_type*;
 			using reference = value_type&;
-		public:
+		
 
-			Iterator(data_type_pointer dataPtr) : m_dataPtr{ dataPtr } {}
+			Iterator(data_type_pointer dataPtr) : m_dataPtr{ dataPtr }, m_accessor(dataPtr) {}
 
 			reference operator*() const {
 				m_accessor.SetDataPtr(m_dataPtr);
@@ -127,7 +128,7 @@ namespace lnr {
 		}
 
 	private:
-		inline static T m_accessor = nullptr;
+		mutable T m_accessor = nullptr;
 
 		Size m_size = 0;
 		pMemRes m_memRes = nullptr;
