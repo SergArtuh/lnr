@@ -27,7 +27,8 @@ namespace lnr {
 
 	private:
 		static const Size DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT = 0x100;
-		static MemoryPool<SIZE_IN_BYTES, DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT> s_allocator;
+
+		using pMemRes = std::pmr::memory_resource*;
 
 	public:
 
@@ -48,7 +49,7 @@ namespace lnr {
 
 		Matrix & operator=(const Matrix & r) {
 			if (!m_data) {
-				m_data = reinterpret_cast<pointer_type>(s_allocator.Allocate());
+				m_data = reinterpret_cast<pointer_type>(m_memRes->allocate(SIZE_IN_BYTES));
 			}
 			memcpy(m_data, r.m_data, SIZE_IN_BYTES);
 			return *this;
@@ -78,10 +79,15 @@ namespace lnr {
 		}
 
 	private:
+		static constexpr pMemRes GetMemPoolAloc() {
+			static MemoryPool<SIZE_IN_BYTES, DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT> s_memPoolAloc;
+			return reinterpret_cast<pMemRes>(&s_memPoolAloc);
+		}
+
 		mutable Vec m_accessor = nullptr;
 
+		pMemRes m_memRes = GetMemPoolAloc();
 		pointer_type m_data = nullptr;
-
 	};
 
 
@@ -95,16 +101,13 @@ namespace lnr {
 
 
 
-	template<class T, Size M, Size N>
-	MemoryPool<Matrix<T, M, N>::SIZE_IN_BYTES, Matrix<T, M, N>::DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT>
-		Matrix<T, M, N>::s_allocator = MemoryPool<Matrix<T, M, N>::SIZE_IN_BYTES, DEFAULT_MATRIX_ALLOC_BLOCK_PAGES_COUNT>();
 
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix() : m_data{ reinterpret_cast<pointer_type>(s_allocator.Allocate()) } {}
+	inline Matrix<T, M, N>::Matrix() : m_data{ reinterpret_cast<pointer_type>(m_memRes->allocate(SIZE_IN_BYTES)) } {}
 
 	template<class T, size_t M, size_t N>
-	inline Matrix<T, M, N>::Matrix(pointer_type ptr) : m_data{ reinterpret_cast<pointer_type>(s_allocator.Allocate()) } {
+	inline Matrix<T, M, N>::Matrix(pointer_type ptr) : m_data{ reinterpret_cast<pointer_type>(m_memRes->allocate(SIZE_IN_BYTES)) } {
 		memcpy(m_data, ptr, SIZE_IN_BYTES);
 	}
 
@@ -129,13 +132,14 @@ namespace lnr {
 
 	template<class T, size_t M, size_t N>
 	inline Matrix<T, M, N>::~Matrix() {
-		if (m_data) {
-			s_allocator.Dellocate(m_data);
+		if (m_data && m_memRes) {
+			m_memRes->deallocate(m_data, SIZE_IN_BYTES);
 		}
 	}
 
 	template<class T, size_t M, size_t N>
 	inline void Matrix<T, M, N>::SetDataPtr(pointer_type vec) {
+		m_memRes = nullptr;
 		m_data = vec;
 	}
 }

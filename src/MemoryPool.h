@@ -1,4 +1,7 @@
 #pragma once
+
+#include <memory_resource>
+
 #include "types.h"
 
 #include <vector>
@@ -7,7 +10,7 @@
 namespace lnr {
 
 	template<Size chunkSize, Size pagesN = 100>
-	class MemoryPool final {
+	class MemoryPool final : std::pmr::memory_resource {
 
 		struct Chunk {
 			Byte* Data;
@@ -117,7 +120,12 @@ namespace lnr {
 			}
 		}
 
-		Data Allocate() {
+	private:
+		Data do_allocate(Size bytes, Size align) override {
+			//TODO: debug assert
+			//static_assert(bytes == BLOCK_SIZE)
+			//static_assert(!align);
+
 			for (auto block = m_blocks.rbegin(); block != m_blocks.rend(); block++) {
 				if (block->IsFreeChunk()) {
 					return block->AllocateChunk();
@@ -132,7 +140,12 @@ namespace lnr {
 			return data;
 		}
 
-		void Dellocate(Data data) {
+		void do_deallocate(Data data, Size bytes, Size align) override {
+			//TODO: debug assert
+			//static_assert(bytes == ChunkBlock::BLOCK_SIZE);
+			//static_assert(align > 0);
+
+
 			for (auto block = m_blocks.begin(); block != m_blocks.end(); block++) {
 				if (block->IsBlockOccupyData(data)) {
 					block->Deallocate(data);
@@ -144,6 +157,10 @@ namespace lnr {
 					}
 				}
 			}
+		}
+
+		bool do_is_equal(const memory_resource& that)  const noexcept override {
+			return this == &that;
 		}
 	private:
 		

@@ -1,4 +1,7 @@
 #pragma once
+
+#include <memory_resource>
+
 #include <stdint.h>
 #include <array>
 
@@ -25,7 +28,10 @@ namespace lnr {
 
 	private:
 		static const Size DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT = 0x100;
-		static MemoryPool<SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT> s_allocator;
+		
+
+		using pMemRes = std::pmr::memory_resource *;
+
 	public:
 
 		Vector();
@@ -65,10 +71,18 @@ namespace lnr {
 		}
 
 		void SetDataPtr(pT dataPtr) {
+			m_memRes = nullptr;
 			m_data = dataPtr;
 		}
 
 	private:
+
+		static constexpr pMemRes GetMemPoolAloc() {
+			static MemoryPool<SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT> s_memPoolAloc;
+			return reinterpret_cast<pMemRes>( & s_memPoolAloc );
+		}
+
+
 		template <size_t D>
 		class DotProduct {
 		public:
@@ -114,7 +128,7 @@ namespace lnr {
 	private:
 		void Copy(Vector& l, const Vector& r);
 
-
+		pMemRes m_memRes = GetMemPoolAloc();
 		pT m_data = nullptr;
 	};
 
@@ -130,9 +144,6 @@ namespace lnr {
 
 
 
-	template<class T, size_t S>
-	MemoryPool<Vector<T, S>::SIZE_IN_BYTES, Vector<T, S>::DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT>
-		Vector<T, S>::s_allocator = MemoryPool<Vector<T, S>::SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT>();
 	
 
 
@@ -140,18 +151,18 @@ namespace lnr {
 	inline Vector<T, S>::Vector(InitArray&& initArray) : Vector(initArray.data()) {}
 
 	template<class T, size_t S>
-	inline Vector<T, S>::Vector() : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {}
+	inline Vector<T, S>::Vector() : m_data{ reinterpret_cast<pT>(m_memRes->allocate(SIZE_IN_BYTES)) } {}
 
 	template<class T, size_t S>
-	inline Vector<T, S>::Vector(nullptr_t) : m_data{ nullptr } {}
+	inline Vector<T, S>::Vector(nullptr_t) : m_data{ nullptr }, m_memRes{ std::pmr::null_memory_resource() } {}
 
 	template<class T, size_t S>
-	inline Vector<T, S>::Vector(pT ptr) : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {
+	inline Vector<T, S>::Vector(pT ptr) : m_data{ reinterpret_cast<pT>(m_memRes->allocate(SIZE_IN_BYTES)) } {
 		memcpy(m_data, ptr, SIZE_IN_BYTES);
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S>::Vector(std::initializer_list<T> fl) : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {
+	inline Vector<T, S>::Vector(std::initializer_list<T> fl) : m_data{ reinterpret_cast<pT>(m_memRes->allocate(SIZE_IN_BYTES)) } {
 		uint16_t counter = 0;
 		for (const T& e : fl) {
 			m_data[counter++] = e;
@@ -159,7 +170,7 @@ namespace lnr {
 	}
 
 	template<class T, size_t S>
-	inline Vector<T, S>::Vector(const Vector& r) : m_data{ reinterpret_cast<pT>(s_allocator.Allocate()) } {
+	inline Vector<T, S>::Vector(const Vector& r) : m_data{ reinterpret_cast<pT>(m_memRes->allocate(SIZE_IN_BYTES)) } {
 		Copy(*this, r);
 	}
 
@@ -172,8 +183,8 @@ namespace lnr {
 	template<class T, size_t S>
 	inline Vector<T, S>::~Vector()
 	{
-		if (m_data) {
-			s_allocator.Dellocate(m_data);
+		if (m_data && m_memRes) {
+			m_memRes->deallocate(m_data, SIZE_IN_BYTES);
 		}
 	}
 

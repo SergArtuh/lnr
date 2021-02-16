@@ -540,7 +540,7 @@ TEST_CASE("Array std fill", "[Array]") {
 	}
 
 	{
-		lnr::Vec4fArray arr =(10);
+		lnr::Vec4fArray arr(10);
 		lnr::Vec4f v = { 1.f ,2.f ,3.f ,4.f };
 
 		std::fill(arr.begin(), arr.end(), v);
