@@ -86,6 +86,8 @@ namespace lnr {
 
 	private:
 
+		// TODO: check performance to compare if using templates more efective
+
 		static constexpr pMemRes GetMemPoolAloc() {
 			static MemoryPool<SIZE_IN_BYTES, DEFAULT_VECTOR_ALLOC_BLOCK_PAGES_COUNT> s_memPoolAloc;
 			return reinterpret_cast<pMemRes>( & s_memPoolAloc );
