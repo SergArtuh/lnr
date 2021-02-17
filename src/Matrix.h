@@ -72,6 +72,19 @@ namespace lnr {
 			return m_accessor;
 		}
 
+
+		constexpr Size GetSize() const {
+			return SIZE;
+		}
+
+		constexpr Size GetSizeCol() const {
+			return SIZE_M;
+		}
+
+		constexpr Size GetSizeRow() const {
+			return SIZE_N;
+		}
+
 		void SetDataPtr(pointer_type);
 
 		pointer_type GetDataPtr() {

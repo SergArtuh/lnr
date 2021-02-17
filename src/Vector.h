@@ -70,6 +70,15 @@ namespace lnr {
 			return m_data[n];
 		}
 
+		constexpr Size GetSize() const {
+			return SIZE;
+		}
+
+		constexpr Size GetSizeInByte() const {
+			return SIZE_IN_BYTES;
+		}
+
+
 		void SetDataPtr(pT dataPtr) {
 			m_memRes = nullptr;
 			m_data = dataPtr;

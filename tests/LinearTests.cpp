@@ -153,7 +153,7 @@ TEST_CASE("Vector with stl", "[Vectors]") {
 		vv0.push_back(lnr::Vec4f(testData2));
 		
 
-		for (int i = 0; i < lnr::Vec4f::SIZE; ++i) {
+		for (int i = 0; i < v0.GetSize(); ++i) {
 			REQUIRE(vv0[0][i] == testData0[i]);
 			REQUIRE(vv0[1][i] == testData1[i]);
 			REQUIRE(vv0[2][i] == testData2[i]);
@@ -162,7 +162,7 @@ TEST_CASE("Vector with stl", "[Vectors]") {
 
 		std::vector<lnr::Vec4f> vv1(10, lnr::Vec4f(testData0));
 		for (auto& v : vv1) {
-			for (int k = 0; k < lnr::Vec4f::SIZE; ++k) {
+			for (int k = 0; k < v0.GetSize(); ++k) {
 				REQUIRE(v[k] == testData0[k]);
 			}
 		}
@@ -261,20 +261,20 @@ TEST_CASE("Matrix with stl", "[Vectors]") {
 		mv0.push_back(lnr::Mat2f(testData2));
 
 
-		for (int i = 0; i < lnr::Mat2f::SIZE_N; ++i) {
-			for (int j = 0; j < lnr::Mat2f::SIZE_M; ++j) {
-				REQUIRE(mv0[0][i][j] == testData0[i * lnr::Mat2f::SIZE_M + j]);
-				REQUIRE(mv0[1][i][j] == testData1[i * lnr::Mat2f::SIZE_M + j]);
-				REQUIRE(mv0[2][i][j] == testData2[i * lnr::Mat2f::SIZE_M + j]);
+		for (int i = 0; i < m0.GetSizeRow(); ++i) {
+			for (int j = 0; j < m0.GetSizeCol(); ++j) {
+				REQUIRE(mv0[0][i][j] == testData0[i * m0.GetSizeCol() + j]);
+				REQUIRE(mv0[1][i][j] == testData1[i * m0.GetSizeCol() + j]);
+				REQUIRE(mv0[2][i][j] == testData2[i * m0.GetSizeCol() + j]);
 			}
 		}
 
 
 		std::vector<lnr::Mat2f> mv1(10, lnr::Mat2f(testData0));
 		for (auto& m : mv1) {
-			for (int i = 0; i < lnr::Mat2f::SIZE_N; ++i) {
-				for (int j = 0; j < lnr::Mat2f::SIZE_M; ++j) {
-					REQUIRE(m[i][j] == testData0[i * lnr::Mat2f::SIZE_M + j]);
+			for (int i = 0; i < m0.GetSizeRow(); ++i) {
+				for (int j = 0; j < m0.GetSizeCol(); ++j) {
+					REQUIRE(m[i][j] == testData0[i * m0.GetSizeCol() + j]);
 				}
 			}
 		}
