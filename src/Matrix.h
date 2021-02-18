@@ -9,7 +9,7 @@
 #include "MemoryPool.h"
 
 namespace lnr {
-	template<class T, size_t M, size_t N>
+	template<class T, size_t N, size_t M>
 	class Matrix final {
 	public:
 		using type = T;
@@ -19,8 +19,8 @@ namespace lnr {
 		using InitList = std::initializer_list<T>;
 
 	public:
-		constexpr static Size SIZE_M = M;
 		constexpr static Size SIZE_N = N;
+		constexpr static Size SIZE_M = M;	
 		constexpr static Size SIZE = SIZE_M * SIZE_N;
 		constexpr static Size SIZE_IN_BYTES = sizeof(T) * SIZE;
 	

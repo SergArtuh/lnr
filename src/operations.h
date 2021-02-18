@@ -56,4 +56,47 @@ namespace lnr {
 	}
 
 
+	template<class T, size_t M, size_t N>
+	Matrix<T, M, N> add(Matrix<T, M, N>&& a, Matrix<T, M, N>&& b) {
+		Matrix<T, M, N> c;
+		for (int i = 0; i < Matrix<T, M, N>::SIZE_M; ++i) {
+			for (int j = 0; j < Matrix<T, M, N>::SIZE_N; ++j) {
+				c[i][j] = a[i][j] + b[i][j];
+			}
+		}
+
+		return c;
+	}
+
+	template<class T, size_t M, size_t N>
+	Matrix<T, M, N> sub(Matrix<T, M, N>&& a, Matrix<T, M, N>&& b) {
+		Matrix<T, M, N> c;
+		for (int i = 0; i < Matrix<T, M, N>::SIZE_M; ++i) {
+			for (int j = 0; j < Matrix<T, M, N>::SIZE_N; ++j) {
+				c[i][j] = a[i][j] - b[i][j];
+			}
+		}
+
+		return c;
+	}
+
+
+	template<class T, Size M, Size N, Size K>
+	Matrix<T, M, K> mult(Matrix<T, M, N>&& a, Matrix<T, N, K>&& b) {
+		Matrix<T, M, K> c;
+		for (int i = 0; i < Matrix<T, M, K>::SIZE_N; ++i) {
+			for (int j = 0; j < Matrix<T, M, K>::SIZE_M; ++j) {
+				c[i][j] = a[i][0] * b[0][j];
+				for (int k = 1; k < Matrix<T, N, K>::SIZE_N; ++k) {
+					T at = a[i][k];
+					T bt = b[k][j];
+					c[i][j] += a[i][k] * b[k][j];
+				}
+			}
+		}
+
+		return c;
+	}
+
+
 }
