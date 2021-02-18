@@ -5,6 +5,7 @@
 #include "../src/Matrix.h"
 #include "../src/Array.h"
 
+#include "../src/operations.h"
 
 TEST_CASE( "Vector initialization", "[Vectors]" ) {
 	float testData0[] = { 1.f, 2.f, 3.f, 4.f };
@@ -168,6 +169,68 @@ TEST_CASE("Vector with stl", "[Vectors]") {
 		}
 	}
 }
+
+
+TEST_CASE("Vector operations", "[Vectors]") {
+
+	float testData0[] = { 1.f, 2.f, 3.f };
+	float testData1[] = { 5.f, 6.f, 7.f };
+
+
+	{
+		lnr::Vec2f a(testData0);
+		lnr::Vec2f b(testData1);
+
+		lnr::Vec2f c = lnr::add(std::move(a), std::move(b));
+		lnr::Vec2f check = { testData0[0] + testData1[0], testData0[1] + testData1[1] };
+		REQUIRE(c == check);
+	}
+
+	{
+		lnr::Vec2f a(testData0);
+		lnr::Vec2f b(testData1);
+
+		lnr::Vec2f c = lnr::sub(std::move(a), std::move(b));
+		lnr::Vec2f check = { testData0[0] - testData1[0], testData0[1] - testData1[1] };
+		REQUIRE(c == check);
+	}
+
+	{
+		lnr::Vec2f a(testData0);
+		lnr::Vec2f b(testData1);
+
+		float c = lnr::dot(std::move(a), std::move(b));
+
+		float check = { testData0[0] * testData1[0] + testData0[1] * testData1[1] };
+		REQUIRE(c == check);
+
+	}
+
+	{
+		lnr::Vec2f a(testData0);
+		lnr::Vec2f b(testData1);
+
+		float c = lnr::len(std::move(a));
+
+		float check = sqrt( testData0[0] * testData0[0] + testData0[1] * testData0[1] );
+		REQUIRE(c == check);
+	}
+
+
+	{
+		lnr::Vec3f a(testData0);
+		lnr::Vec3f b(testData1);
+
+		lnr::Vec3f c = lnr::cross(std::move(a), std::move(b));
+		lnr::Vec3f check = {
+			testData0[1] * testData1[2] - testData0[2] * testData1[1],
+			testData0[2] * testData1[0] - testData0[0] * testData1[2],
+			testData0[0] * testData1[1] - testData0[1] * testData1[0]
+			}; 
+		REQUIRE(c == check);
+	}
+}
+
 
 
 TEST_CASE("Matrix initialization", "[Matrix]") {
