@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(src)
+add_subdirectory(pylnr)
 
 if(LNR_BUILD_TESTING)
 	enable_testing()

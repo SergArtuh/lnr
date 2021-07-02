@@ -1,5 +1,7 @@
 set(This LNR)
 
+find_package (Python COMPONENTS Interpreter Development)
+
 file(GLOB sources ./**.cpp )
 file(GLOB headers ./**.h )
 	
