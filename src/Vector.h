@@ -84,6 +84,10 @@ namespace lnr {
 			m_data = dataPtr;
 		}
 
+		pT GetDataPtr() {
+			return m_data;
+		}
+
 	private:
 
 		// TODO: check performance to compare if using templates more efective
