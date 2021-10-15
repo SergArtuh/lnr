@@ -60,7 +60,11 @@ extern "C" {
 
 	Vec2f* GetVectorMatrix2f(Mat2f* m, UI32 i);
 
+	float* GetDataPtrMatrix2f(Mat2f* m);
+
 	void SetMatrix2f(Mat2f* m, UI32 i, UI32 j, float value);
+
+	void SetDataPtrMatrix2f(Mat2f* m, float* dataPtr);
 
 
 	
@@ -72,7 +76,11 @@ extern "C" {
 
 	Vec3f* GetVectorMatrix3f(Mat3f* m, UI32 i);
 
+	float* GetDataPtrMatrix3f(Mat3f* m);
+
 	void SetMatrix3f(Mat3f* m, UI32 i, UI32 j, float value);
+
+	void SetDataPtrMatrix3f(Mat3f* m, float* dataPtr);
 
 
 
@@ -85,6 +93,8 @@ extern "C" {
 	float GetMatrix4f(Mat4f* v, UI32 i, UI32);
 
 	Vec4f* GetVectorMatrix4f(Mat4f* v, UI32 i);
+
+	float* GetDataPtrMatrix4f(Mat4f* m);
 
 	void SetMatrix4f(Mat4f* v, UI32 i, UI32 j, float value);
 

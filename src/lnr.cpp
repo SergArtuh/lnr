@@ -110,8 +110,16 @@ Vec2f* GetVectorMatrix2f(Mat2f* m, UI32 i)
 	return v;
 }
 
+float* GetDataPtrMatrix2f(Mat2f* m) {
+	return m->GetDataPtr();
+}
+
 void SetMatrix2f(Mat2f* m, UI32 i, UI32 j, float value) {
 	(*m)[i][j] = value;
+}
+
+void SetDataPtrMatrix2f(Mat2f* m, float* dataPtr) {
+	m->SetDataPtr(dataPtr);
 }
 
 
@@ -141,8 +149,17 @@ Vec3f* GetVectorMatrix3f(Mat3f* m, UI32 i)
 	return v;
 }
 
+float* GetDataPtrMatrix3f(Mat3f* m)
+{
+	return m->GetDataPtr();
+}
+
 void SetMatrix3f(Mat3f* m, UI32 i, UI32 j, float value) {
 	(*m)[i][j] = value;
+}
+
+void SetDataPtrMatrix3f(Mat3f* m, float* dataPtr) {
+	m->SetDataPtr(dataPtr);
 }
 
 
@@ -176,6 +193,11 @@ Vec4f* GetVectorMatrix4f(Mat4f* m, UI32 i)
 	Vec4f* v = new Vec4f(nullptr);
 	v->SetDataPtr((*m)[i].GetDataPtr());
 	return v;
+}
+
+float* GetDataPtrMatrix4f(Mat4f* m)
+{
+	return m->GetDataPtr();
 }
 
 void SetMatrix4f(Mat4f* m, UI32 i, UI32 j, float value) {
