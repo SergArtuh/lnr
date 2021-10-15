@@ -99,5 +99,25 @@ extern "C" {
 	void SetMatrix4f(Mat4f* v, UI32 i, UI32 j, float value);
 
 	void SetDataPtrMatrix4f(Mat4f* m, float* dataPtr);
+
+
+	//////////////////////////////////////////////////////////////////////////
+	///////////////////////Matrix Operators///////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+
+
+	void AssignmentMatrix2f(Mat2f* matrixA, Mat2f* matrixB);
+
+	void AssignmentMatrix3f(Mat3f* matrixA, Mat3f* matrixB);
+
+	void AssignmentMatrix4f(Mat4f* matrixA, Mat4f* matrixB);
+
+
+
+	Mat2f* MultiplyMatrix2f(Mat2f* matrixA, Mat2f* matrixB);
+
+	Mat3f* MultiplyMatrix3f(Mat3f* matrixA, Mat3f* matrixB);
+
+	Mat4f* MultiplyMatrix4f(Mat4f* matrixA, Mat4f* matrixB);
 	
 }

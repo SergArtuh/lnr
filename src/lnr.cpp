@@ -1,4 +1,5 @@
 #include "lnr.h"
+#include "operations.h"
 
 Vec2f* CreateVector2f(float* data) {
 	if (!data) {
@@ -213,4 +214,28 @@ void SetMatrix4f(Mat4f* m, UI32 i, UI32 j, float value) {
 
 void SetDataPtrMatrix4f(Mat4f* m, float * dataPtr) {
 	m->SetDataPtr(dataPtr);
+}
+
+void AssignmentMatrix2f(Mat2f* matrixA, Mat2f* matrixB) {
+	(*matrixA) = *matrixB;
+}
+
+void AssignmentMatrix3f(Mat3f* matrixA, Mat3f* matrixB) {
+	(*matrixA) = *matrixB;
+}
+
+void AssignmentMatrix4f(Mat4f* matrixA, Mat4f* matrixB) {
+	(*matrixA) = *matrixB;
+}
+
+Mat2f* MultiplyMatrix2f(Mat2f* matrixA, Mat2f* matrixB) {
+	return new Mat2f(std::move(mult(std::forward< Mat2f >(*matrixA), std::forward< Mat2f >(*matrixB))));
+}
+
+Mat3f* MultiplyMatrix3f(Mat3f* matrixA, Mat3f* matrixB) {
+	return new Mat3f(std::move(mult(std::forward< Mat3f >(*matrixA), std::forward< Mat3f >(*matrixB))));
+}
+
+Mat4f* MultiplyMatrix4f(Mat4f* matrixA, Mat4f* matrixB) {
+	return new Mat4f(std::move(mult(std::forward< Mat4f >(*matrixA), std::forward< Mat4f >(*matrixB))));
 }
