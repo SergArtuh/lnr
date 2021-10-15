@@ -37,6 +37,12 @@ Vec3f* CreateVector3f(float * data)
 	return new Vec3f(data);
 }
 
+void DeleteVector3f(Vec3f* v) {
+	if (v) {
+		delete v;
+	}
+}
+
 /*Vec3f* CreateVectorFromNativeData3f(float* ptr)
 {
 	return nullptr;
